@@ -1,0 +1,18 @@
+# Copy to .github/workflows/packages.yml in a consuming repository and pin the
+# reusable workflow to a reviewed toolkit release tag.
+name: Package validation
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  packages:
+    uses: aminrk2001/ark-release-toolkit/.github/workflows/release.yml@v1
+    with:
+      manifest: tests/package-files.json
+      toolkit-ref: v1

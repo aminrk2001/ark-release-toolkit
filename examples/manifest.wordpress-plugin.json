@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "products": {
+    "free": {
+      "slug": "example-plugin",
+      "files": [
+        "LICENSE.txt",
+        "assets/admin.css",
+        "assets/admin.js",
+        "example-plugin.php",
+        "includes/class-example-plugin.php",
+        "languages/example-plugin.pot",
+        "readme.txt",
+        "uninstall.php",
+        "USER-GUIDE.en.md"
+      ]
+    }
+  }
+}
