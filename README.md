@@ -7,10 +7,12 @@ their package allowlist and a small workflow caller.
 
 ## Status
 
-Initial implementation. The builder accepts the `schema_version: 1` product
-manifest shape used by Media Auditor, emits normalized plugin ZIPs and SHA-256
-sidecars, and rejects stale allowlists. Reusable workflow CI and fixture-based
-verification are still required before creating a stable toolkit tag.
+The builder accepts the `schema_version: 1` product manifest shape used by
+Media Auditor, emits normalized plugin ZIPs and SHA-256 sidecars, and rejects
+stale allowlists. Toolkit CI passes, and the composite action has been exercised
+against Media Auditor's production manifest with byte-for-byte Free/Pro package
+parity. The current reusable workflow and action can be pinned to commit
+`252b73b6383061006483fb44da5f842c63e4a7d6`.
 
 ## Quick start
 
@@ -22,7 +24,8 @@ verification are still required before creating a stable toolkit tag.
 3. Run `python scripts/build.py --manifest package-files.json --source-root . --output-dir dist --all-products`
    locally and inspect the archives and `.sha256` sidecars.
 4. Add a workflow that calls the reusable workflow and pins both workflow and
-   implementation to the same reviewed toolkit tag or commit.
+   implementation to the same reviewed toolkit tag or commit. The example
+   uses the current immutable commit SHA.
 5. Review the generated files and CI evidence before enabling stable Releases.
 
 See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
@@ -43,4 +46,3 @@ See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
 ## License
 
 MIT. See `LICENSE`.
-
