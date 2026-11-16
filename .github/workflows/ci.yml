@@ -24,3 +24,4 @@ jobs:
           python -m json.tool examples/manifest.wordpress-plugin.json >/dev/null
       - name: Run package builder regression tests
         run: python -m unittest discover -s tests -v
+
