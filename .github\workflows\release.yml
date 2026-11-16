@@ -1,0 +1,53 @@
+name: Reusable package build
+
+on:
+  workflow_call:
+    inputs:
+      manifest:
+        description: Path to the consuming project's release manifest
+        required: false
+        type: string
+        default: release-manifest.json
+      output-directory:
+        description: Directory for ZIP archives and SHA-256 sidecars
+        required: false
+        type: string
+        default: dist
+      toolkit-ref:
+        description: Immutable toolkit commit or reviewed toolkit release tag
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out consuming project
+        uses: actions/checkout@v4
+      - name: Check out pinned toolkit implementation
+        uses: actions/checkout@v4
+        with:
+          repository: aminrk2001/ark-release-toolkit
+          ref: ${{ inputs.toolkit-ref }}
+          path: toolkit
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Build manifest packages
+        uses: ./toolkit/.github/actions/build
+        with:
+          manifest: ${{ inputs.manifest }}
+          output-directory: ${{ inputs.output-directory }}
+          products: all
+      - name: Upload package artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-packages
+          path: |
+            ${{ inputs.output-directory }}/*.zip
+            ${{ inputs.output-directory }}/*.sha256
+          if-no-files-found: error

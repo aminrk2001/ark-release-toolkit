@@ -1,0 +1,46 @@
+name: Build manifest packages
+description: Validate a release manifest and create deterministic ZIP packages with SHA-256 sidecars
+inputs:
+  manifest:
+    description: Manifest path relative to the consuming repository
+    required: false
+    default: release-manifest.json
+  output-directory:
+    description: Output directory relative to the consuming repository
+    required: false
+    default: dist
+  source-root:
+    description: Directory containing plugin directories named by the manifest slugs
+    required: false
+    default: .
+  products:
+    description: Comma-separated product IDs, or all
+    required: false
+    default: all
+runs:
+  using: composite
+  steps:
+    - name: Build packages
+      shell: bash
+      env:
+        MANIFEST: ${{ inputs.manifest }}
+        OUTPUT_DIRECTORY: ${{ inputs.output-directory }}
+        SOURCE_ROOT: ${{ inputs.source-root }}
+        PRODUCTS: ${{ inputs.products }}
+      run: |
+        set -euo pipefail
+        args=()
+        if [[ "$PRODUCTS" == "all" ]]; then
+          args+=(--all-products)
+        else
+          IFS=',' read -r -a product_ids <<< "$PRODUCTS"
+          for product_id in "${product_ids[@]}"; do
+            [[ -n "$product_id" ]] || { echo "Empty product ID in PRODUCTS" >&2; exit 2; }
+            args+=(--product "$product_id")
+          done
+        fi
+        python "${{ github.action_path }}/../../../scripts/build.py" \
+          --manifest "$MANIFEST" \
+          --source-root "$SOURCE_ROOT" \
+          --output-dir "$OUTPUT_DIRECTORY" \
+          "${args[@]}"
