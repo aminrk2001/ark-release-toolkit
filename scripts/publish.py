@@ -141,8 +141,10 @@ def verify_package_sources(assets: list[Path], manifest_path: Path, source_root:
             verify_committed_file(source)
 
     output_dir = source_root.resolve() / f".ark-release-verify-{uuid.uuid4().hex}"
+    created_output = False
     try:
         output_dir.mkdir()
+        created_output = True
         generated = package_builder.build(source_root.resolve(), output_dir, manifest["products"])
         generated_by_name = {archive.name: (archive, sidecar) for archive, sidecar, _digest, _product_id in generated}
         for archive in archives:
@@ -157,7 +159,7 @@ def verify_package_sources(assets: list[Path], manifest_path: Path, source_root:
     except (OSError, ValueError) as error:
         raise PublishError(f"Could not reproduce the package from the current source: {error}") from error
     finally:
-        if output_dir.exists():
+        if created_output:
             shutil.rmtree(output_dir)
 
 

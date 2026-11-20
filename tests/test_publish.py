@@ -209,6 +209,27 @@ class PublisherTest(unittest.TestCase):
                 self.run_publish()
         self.assertEqual(len(mocked.call_args_list), 3)
 
+    def test_existing_verification_directory_is_preserved(self) -> None:
+        output_dir = self.source_root / ".ark-release-verify-collision"
+        output_dir.mkdir()
+        marker = output_dir / "user-data.txt"
+        marker.write_text("preserve", encoding="utf-8")
+        fake_uuid = type("FixedUUID", (), {"hex": "collision"})()
+
+        def fake_run(args, **kwargs):
+            git = self.git_result(args)
+            if git:
+                return git
+            self.fail(f"Unexpected command: {args}")
+
+        with patch("publish.uuid.uuid4", return_value=fake_uuid):
+            with patch("publish.subprocess.run", side_effect=fake_run) as mocked:
+                with self.assertRaisesRegex(PublishError, "Could not reproduce the package"):
+                    self.run_publish()
+        self.assertTrue(marker.exists())
+        self.assertEqual(marker.read_text(encoding="utf-8"), "preserve")
+        self.assertFalse(any(item.args[0][0] == "gh" for item in mocked.call_args_list))
+
 
 if __name__ == "__main__":
     unittest.main()
