@@ -27,6 +27,9 @@ parity. The current reusable workflow and action can be pinned to commit
    implementation to the same reviewed toolkit tag or commit. The example
    uses the current immutable commit SHA.
 5. Review the generated files and CI evidence before enabling stable Releases.
+6. For a user-initiated, browser-free publication, use the optional local
+   publisher described in `docs/CONSUMER-SETUP.md` after the project release
+   gates pass.
 
 See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
 
@@ -41,8 +44,11 @@ See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
   permissions. SHA-256 sidecars are generated for every archive.
 - The reusable workflow builds and uploads CI artifacts only. Each consuming
   project keeps its own tests and release eligibility gates; the toolkit does
-  not infer stable status or publish a GitHub Release.
+  not infer stable status or publish a GitHub Release automatically. The
+  separate local publisher is an explicit operator action and verifies the
+  current source, existing tag, package checksums, and uploaded asset digests.
 
 ## License
 
 MIT. See `LICENSE`.
+
