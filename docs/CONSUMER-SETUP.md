@@ -49,9 +49,45 @@ checked-in manifest, compares their bytes and sidecars, creates a GitHub draft,
 checks every uploaded asset's SHA-256 digest, and only then publishes it. It
 does not create or move tags, replace existing releases, or overwrite assets.
 
-Install GitHub CLI (`gh`) and authenticate it for the target repository with
-permission to create Releases. Authentication is stored by `gh`; do not put a
-token in the manifest, command line, or repository. Run this from the consuming
+### One-time setup on Windows
+
+Install the official GitHub CLI with WinGet:
+
+```powershell
+winget install --id GitHub.cli --source winget
+```
+
+Close and reopen PowerShell or Windows Terminal, then sign in once:
+
+```powershell
+gh --version
+gh auth login --hostname github.com --git-protocol https
+```
+
+Choose GitHub.com and HTTPS in the prompts, then complete the sign-in. GitHub
+CLI's default sign-in may open a browser for this one-time authorization. After
+that, the publisher runs from the terminal without browser or screen control.
+Check that the intended account is active:
+
+```powershell
+gh auth status --hostname github.com
+```
+
+The account needs push access to the target repository. Fine-grained tokens need
+the repository's `Contents: write` permission; if the tagged commit changes
+files under `.github/workflows/` compared with the default branch, GitHub may
+also require `Workflows: write` (or the corresponding `workflow` OAuth scope).
+Use the official [Windows installation instructions](https://github.com/cli/cli/blob/trunk/docs/install_windows.md)
+or [GitHub CLI authentication guide](https://docs.github.com/en/github-cli/github-cli/authenticating-with-github-cli)
+for other setup details.
+
+GitHub CLI stores credentials in the operating-system keyring when available;
+otherwise it can fall back to a plain-text config file. Do not use
+`--insecure-storage`. Never print the token with `gh auth token` or
+`gh auth status --show-token`, and do not put a token in the manifest, command
+line, or repository.
+
+Use a reviewed, immutable Toolkit checkout. Run this from the consuming
 project's source checkout, where `git rev-parse HEAD` identifies the intended
 source commit:
 
