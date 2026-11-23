@@ -29,12 +29,18 @@ publish a Release, create or move tags, or change the project's release policy.
    `142d6140d73e132398ca0deb330de1e50e7adec2`, using a project tools/cache
    location that will not enter the product archive. Never overwrite an
    existing checkout with local changes.
-4. Copy this skill directory into the consumer project's
-   `.agents/skills/ark-release-publisher/` for Codex discovery. Inspect an
-   existing skill before changing it; preserve project-specific instructions.
-   If the current AI environment does not discover project-local skills, use
-   this skill's instructions in the current conversation and explain the
-   supported persistence option for that environment.
+4. Install the canonical skill directory into the project folder supported by
+   the current AI host: Codex and Gemini CLI use
+   `.agents/skills/ark-release-publisher/`; Claude Code uses
+   `.claude/skills/ark-release-publisher/`; Cursor uses
+   `.cursor/skills/ark-release-publisher/`; GitHub Copilot (including VS Code
+   Agent mode and Copilot CLI) uses
+   `.github/skills/ark-release-publisher/`. For VS Code, follow the selected
+   harness's skill locations. If the project uses multiple agents, install
+   byte-identical copies for each and keep the Toolkit copy canonical. Inspect
+   any existing skill before changing it. In cloud sessions, use a committed
+   project skill and verify that the cloud agent discovers it; personal local
+   skills may not be available there.
 5. Check Git, Python 3.10+, and GitHub CLI. Install missing tools using official
    platform instructions when terminal access, network access, and permissions
    allow. Do not claim an installation succeeded without checking the version.
@@ -50,10 +56,13 @@ publish a Release, create or move tags, or change the project's release policy.
    versions, authentication status, project changes, and any remaining
    configuration or specific blocker.
 
-The user's intended manual step is GitHub account authorization. If operating
-system restrictions, network access, missing terminal/file tools, or agent
-capabilities prevent another step, explain the exact limit and finish all
-independent work.
+The user's intended manual step is GitHub account authorization. Cloud agents
+may not share the local machine's GitHub CLI installation or interactive sign-in
+flow. Check `gh auth status` in the active environment; if it cannot authorize
+GitHub, finish independent setup and continue publication from a local agent or
+terminal after the user signs in there. If operating system restrictions,
+network access, missing terminal/file tools, or agent capabilities prevent
+another step, explain the exact limit and finish all independent work.
 
 ## Publish a GitHub Release
 
@@ -74,7 +83,10 @@ publish.
    authenticated, tell the user before starting the one-time sign-in, run
    `gh auth login --hostname github.com --git-protocol https`, pause while they
    complete GitHub authorization, then verify sign-in and resume publication.
-   Do not ask the user to copy credentials into chat.
+   If the current cloud session cannot perform interactive authorization, do
+   not ask the user to copy credentials into it; finish publication from a
+   local terminal after confirming `gh auth status`. Do not ask the user to copy
+   credentials into chat.
 5. The command creates a draft, verifies the uploaded files and SHA-256 digests,
    then publishes without browser or computer-screen automation.
 6. If any check fails or a draft is left behind, stop. Do not retry with
