@@ -1,40 +1,33 @@
 # ARK Release Toolkit
 
-Reusable GitHub Actions and a manifest-driven package builder for WordPress
-plugin projects that need repeatable Free/Pro or single-product archives. This
-repository is separate from product repositories; projects opt in by supplying
-their package allowlist and a small workflow caller.
+Build reproducible, allowlist-based ZIP packages for WordPress plugins and publish
+verified assets to GitHub Releases. Use a checked-in JSON manifest with reusable
+GitHub Actions, or ask an AI coding agent to set up the Toolkit in your project.
 
-## Status
+## What it does
 
-The builder accepts the `schema_version: 1` product manifest shape used by
-Media Auditor, emits normalized plugin ZIPs and SHA-256 sidecars, and rejects
-stale allowlists. Toolkit CI passes, and the composite action has been exercised
-against Media Auditor's production manifest with byte-for-byte Free/Pro package
-parity. The current reusable workflow and action can be pinned to commit
-`252b73b6383061006483fb44da5f842c63e4a7d6`.
+- Creates deterministic ZIP files for one or more plugin products, including
+  Free/Pro variants, with a SHA-256 checksum sidecar for each package.
+- Runs the same package builder locally or through reusable GitHub Actions; the
+  workflow uploads the ZIPs and checksums as CI artifacts.
+- Optionally publishes already-built packages to a GitHub Release through the
+  local GitHub CLI publisher. It verifies the source commit, existing Git tag,
+  reproducible package files, and uploaded asset digests before publishing.
+- Guides AI coding agents through project setup. The shared skill supports
+  Codex, Claude Code, Cursor, GitHub Copilot/VS Code, and Gemini CLI.
 
-## Quick start
+The Toolkit is for WordPress plugin projects that need consistent release
+archives from an explicit production file allowlist. It does not publish to the
+WordPress.org plugin directory. The reusable workflow builds CI artifacts only;
+the optional local publisher handles GitHub Releases after the project’s own
+release checks pass. Publication requires an existing tag that points to the
+current source commit.
 
-1. Copy `examples/manifest.wordpress-plugin.json` into the consuming project,
-   or use its existing compatible `package-files.json` manifest.
-2. Define one product entry for each installable ZIP. Set the plugin `slug` and
-   explicit production file allowlist. Do not include secrets, local
-   configuration, development dependencies, or generated test data.
-3. Run `python scripts/build.py --manifest package-files.json --source-root . --output-dir dist --all-products`
-   locally and inspect the archives and `.sha256` sidecars.
-4. Add a workflow that calls the reusable workflow and pins both workflow and
-   implementation to the same reviewed toolkit tag or commit. The example
-   uses the current immutable commit SHA.
-5. Review the generated files and CI evidence before enabling stable Releases.
-6. For a user-initiated, browser-free publication, use the optional local
-   publisher described in [Consumer setup](docs/CONSUMER-SETUP.md).
+## Choose how to use it
 
-## Activate with an AI coding agent
+### Set it up with an AI coding agent
 
-In a project chat that has access to the project files and terminal, ask. The
-Toolkit's setup guide covers Codex, Claude Code, Cursor, GitHub Copilot/VS Code,
-and Gemini CLI. The workflow is shared; only the project skill folder varies:
+In an AI coding chat with access to the project files and terminal, ask:
 
 > Activate the ARK Release Toolkit for this project. Read its consumer setup
 > guide and project instructions, install and pin the toolkit, add its project
@@ -43,26 +36,47 @@ and Gemini CLI. The workflow is shared; only the project skill folder varies:
 > I complete that account authorization, then continue and verify the setup.
 > Do not publish a Release as part of activation.
 
-The chat should explain the one-time GitHub authorization requirement before
-running setup, then do the rest of the available work itself. See the
-[step-by-step activation and AI prompt](docs/CONSUMER-SETUP.md#activate-this-toolkit-with-an-ai-chat)
-for the exact flow, supported skill locations, cloud-agent notes, and limitations.
+The guide covers the supported project skill locations, one-time GitHub
+authorization, cloud-agent limitations, and the complete step-by-step flow:
+[AI-assisted activation](docs/CONSUMER-SETUP.md#activate-this-toolkit-with-an-ai-chat).
 
-## Design rules
+### Configure it manually
 
-- Product selection and package files stay in a checked-in JSON manifest; no
-  arbitrary shell commands are accepted from manifests.
-- Packaging uses explicit file allowlists, rejects symlinks and paths outside
-  the plugin root, and fails when managed `assets`, `includes`, or `languages`
-  files are missing from or stale in the allowlist.
+1. Copy `examples/manifest.wordpress-plugin.json` into the consuming project,
+   or use an existing compatible `package-files.json` manifest.
+2. Add one product entry for each installable archive. Set its plugin `slug`
+   and explicit production file allowlist. Exclude secrets, local configuration,
+   development dependencies, and generated test data.
+3. Build and inspect the packages locally:
+
+   ```sh
+   python scripts/build.py --manifest package-files.json --source-root . --output-dir dist --all-products
+   ```
+
+4. Add a GitHub Actions caller workflow pinned to a reviewed, immutable Toolkit
+   reference. See [consumer setup](docs/CONSUMER-SETUP.md) for the manifest,
+   workflow, and optional GitHub Release publication requirements.
+5. Run the consuming project's checks and release gates before publishing.
+
+## Package safety and reproducibility
+
+- Package contents come from a checked-in JSON allowlist; manifests do not
+  accept arbitrary shell commands.
+- The builder rejects symlinks and paths outside the plugin source directory,
+  and blocks missing or stale entries in managed `assets/`, `includes/`, and
+  `languages/` folders.
 - ZIP entries use a fixed timestamp, stable ordering, and normalized Unix file
-  permissions. SHA-256 sidecars are generated for every archive.
-- The reusable workflow builds and uploads CI artifacts only. Each consuming
-  project keeps its own tests and release eligibility gates; the toolkit does
-  not infer stable status or publish a GitHub Release automatically. The
-  separate local publisher is an explicit operator action and verifies the
-  current source, existing tag, package checksums, and uploaded asset digests.
+  permissions, so matching source and manifest inputs produce matching ZIPs.
+- SHA-256 sidecars are generated for every archive.
+
+## Validation status
+
+The builder accepts the `schema_version: 1` manifest shape used by Media
+Auditor. Toolkit CI runs the package-builder regression tests, and the
+composite action has been exercised against Media Auditor's production manifest
+with byte-for-byte Free/Pro package parity. The reusable workflow and action
+can be pinned to commit `252b73b6383061006483fb44da5f842c63e4a7d6`.
 
 ## License
 
-MIT. See `LICENSE`.
+MIT. See [LICENSE](LICENSE).
