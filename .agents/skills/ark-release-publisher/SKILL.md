@@ -26,7 +26,7 @@ publish a Release, create or move tags, or change the project's release policy.
    and report the blocker.
 3. Read `docs/CONSUMER-SETUP.md`. Install/reuse a clean Toolkit checkout at the
    documented immutable commit
-   `3a3769cc7cc95697eaf3fe038e6ec1ef647b1445`, using a project tools/cache
+   `142d6140d73e132398ca0deb330de1e50e7adec2`, using a project tools/cache
    location that will not enter the product archive. Never overwrite an
    existing checkout with local changes.
 4. Copy this skill directory into the consumer project's
