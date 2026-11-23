@@ -28,10 +28,23 @@ parity. The current reusable workflow and action can be pinned to commit
    uses the current immutable commit SHA.
 5. Review the generated files and CI evidence before enabling stable Releases.
 6. For a user-initiated, browser-free publication, use the optional local
-   publisher described in `docs/CONSUMER-SETUP.md` after the project release
-   gates pass.
+   publisher described in [Consumer setup](docs/CONSUMER-SETUP.md).
 
-See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
+## Activate with an AI coding chat
+
+In a project chat that has access to the project files and terminal, ask:
+
+> Activate the ARK Release Toolkit for this project. Read its consumer setup
+> guide and project instructions, install and pin the toolkit, add its project
+> skill, check the prerequisites, and complete every setup step. Tell me before
+> starting that I may need to approve GitHub CLI sign-in once. Pause only while
+> I complete that account authorization, then continue and verify the setup.
+> Do not publish a Release as part of activation.
+
+The chat should explain the one-time GitHub authorization requirement before
+running setup, then do the rest of the available work itself. See the
+[step-by-step activation and AI prompt](docs/CONSUMER-SETUP.md#activate-this-toolkit-with-an-ai-chat)
+for the exact flow and limitations.
 
 ## Design rules
 
@@ -51,4 +64,3 @@ See `docs/CONSUMER-SETUP.md` for project-side requirements and security notes.
 ## License
 
 MIT. See `LICENSE`.
-
