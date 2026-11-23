@@ -1,6 +1,6 @@
 ---
 name: ark-release-publisher
-description: Set up or activate the ARK Release Toolkit in a project, or publish verified ARK package ZIPs and SHA-256 sidecars to an existing GitHub tag when explicitly requested. Guides Codex through project setup and browser-free GitHub release publication.
+description: Set up or activate the ARK Release Toolkit in a project using Codex, Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, or another agent that supports Agent Skills; or publish verified ARK package ZIPs and SHA-256 sidecars to an existing GitHub tag when explicitly requested.
 ---
 
 # ARK Release Toolkit

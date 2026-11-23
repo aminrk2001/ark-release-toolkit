@@ -7,10 +7,48 @@ before adopting an example.
 
 ## Activate this Toolkit with an AI chat
 
-This is the recommended path for a developer using Codex or another AI coding
-chat with access to the project's files and terminal. The AI should carry out
-the setup; the user should only need to complete GitHub's account authorization
-if the GitHub CLI is not already signed in.
+This is the recommended path for a developer using Codex, Claude Code, Cursor,
+GitHub Copilot, VS Code, Gemini CLI, or another AI coding agent with access to
+the project's files and terminal. The Toolkit uses one shared Agent Skill; the
+project folder where it is installed depends on the agent. The AI should carry
+out the setup; the user should only need to complete GitHub's account
+authorization if the GitHub CLI is not already signed in.
+
+### Project skill locations
+
+The Toolkit keeps one canonical skill at
+`.agents/skills/ark-release-publisher/`. Copy that same folder, without
+rewriting its instructions, to the project location supported by the AI agent:
+
+| AI coding agent | Project skill folder |
+| --- | --- |
+| OpenAI Codex | `.agents/skills/ark-release-publisher/` |
+| Claude Code | `.claude/skills/ark-release-publisher/` |
+| Cursor | `.cursor/skills/ark-release-publisher/` |
+| GitHub Copilot, including VS Code Agent mode and Copilot CLI | `.github/skills/ark-release-publisher/` |
+| Gemini CLI | `.agents/skills/ark-release-publisher/` |
+
+VS Code skill discovery depends on the selected agent harness. Use the row for
+that harness; for GitHub Copilot in VS Code, use `.github/skills/`. The official
+guides explain [Claude Code skills](https://code.claude.com/docs/en/skills),
+[Cursor skills](https://cursor.com/docs/skills),
+[GitHub Copilot skills](https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/add-skills),
+[VS Code Agent Skills](https://code.visualstudio.com/docs/agent-customization/agent-skills),
+and [Gemini CLI Agent Skills](https://geminicli.com/docs/cli/skills/).
+
+If the project uses more than one agent, install byte-identical copies in each
+agent's listed folder and keep the Toolkit copy as the source of truth. Avoid
+editing one copy independently. After installation, start a fresh chat (or
+refresh skills using that agent's supported command) and confirm the skill is
+available.
+
+For cloud agents, commit the project-level skill in the repository. Do not rely
+on a personal skill installed only on the developer's machine. Cloud sessions
+may not share the local machine's `gh` installation or sign-in: check
+`gh auth status --hostname github.com` inside the actual environment. If it
+cannot run an interactive GitHub sign-in, finish project setup there and use a
+local coding agent/terminal for the browser-free publisher after GitHub CLI is
+authorized. Never copy a token into chat or cloud configuration.
 
 ### What the AI must tell you first
 
@@ -50,15 +88,14 @@ the sign-in, and then continue without asking the user to repeat the setup.
    If that exact checkout already exists, verify its commit instead of cloning
    over it. For later Toolkit updates, review the new source and pin the
    intended commit explicitly.
-4. Install the project skill by copying
-   `.agents/skills/ark-release-publisher/` from the pinned Toolkit checkout
-   into the consuming project's
-   `.agents/skills/ark-release-publisher/`. Preserve local project
-   instructions and inspect any existing skill before changing it. Codex uses
-   repository-local skills under `.agents/skills/`; other coding agents may
-   have a different discovery mechanism. If the current chat can read the
-   Toolkit skill but cannot make it available to future chats, say so and give
-   the supported next step for that agent.
+4. Identify the current AI agent and install the canonical
+   `.agents/skills/ark-release-publisher/` folder from the pinned Toolkit
+   checkout into the corresponding project skill folder in the table above.
+   Preserve local project instructions and inspect any existing skill before
+   changing it. If the user works with multiple agents, install identical copies
+   for each. Verify discovery in a fresh chat or with that agent's refresh
+   command. If the current chat can read the Toolkit skill but cannot make it
+   available to future chats, explain the supported next step.
 5. Check for Git, Python 3.10 or later (the Toolkit CI currently tests Python
    3.12), and GitHub CLI (`gh`). Install missing prerequisites using the
    operating system's official method when the chat has the needed terminal
@@ -92,9 +129,12 @@ Paste this in the consuming project's AI coding chat:
 
 ```text
 Activate the ARK Release Toolkit for this project. Read the Toolkit's
-docs/CONSUMER-SETUP.md and .agents/skills/ark-release-publisher/SKILL.md,
-along with this project's AGENTS.md, README, release instructions, and relevant
-configuration before changing anything.
+docs/CONSUMER-SETUP.md and its canonical
+.agents/skills/ark-release-publisher/SKILL.md, along with this project's
+AGENTS.md, README, release instructions, and relevant configuration before
+changing anything. Identify the current AI agent and install the skill into
+the project folder listed for that agent in the setup guide. For more than one
+agent, install identical copies in each supported location.
 
 At the start, tell me that GitHub CLI may require a one-time GitHub account
 sign-in and that you will pause only for me to complete that authorization,
@@ -105,8 +145,10 @@ Toolkit checkout to commit
 142d6140d73e132398ca0deb330de1e50e7adec2, install the project skill in the
 location this coding agent discovers, check/install Git, Python 3.10+, and
 GitHub CLI where permitted, then verify gh authentication. If sign-in is
-needed, start it, wait for my GitHub authorization, verify it, and resume the
-remaining steps yourself.
+needed and this environment supports interactive authorization, start it, wait
+for my GitHub authorization, verify it, and resume the remaining steps yourself.
+If this is a cloud session that cannot complete sign-in, finish the independent
+setup and tell me to authorize GitHub CLI from a local terminal before publishing.
 
 Complete the project manifest/workflow setup only when the project's actual
 files and release policy make the correct values clear. Do not guess allowlists,
@@ -116,7 +158,10 @@ blocker.
 ```
 
 If the chat does not have project terminal/file access, the user can follow the
-manual setup below or switch to an AI coding environment with those tools.
+manual setup below or switch to an AI coding environment with those tools. In
+cloud sessions, check whether that session can run and authorize GitHub CLI; if
+it cannot perform interactive sign-in, use a local terminal for Release
+publication.
 
 ## Manual setup for a developer
 
@@ -125,10 +170,10 @@ manual setup below or switch to an AI coding environment with those tools.
    current local publisher reference is
    `142d6140d73e132398ca0deb330de1e50e7adec2`; do not track a floating branch
    for release use.
-3. Copy the Toolkit skill folder into the project-local
-   `.agents/skills/ark-release-publisher/` when using Codex. Read its
-   `SKILL.md` and follow your coding agent's own project-skill installation
-   rules if using a different agent.
+3. Copy the canonical Toolkit skill folder into the consuming project's
+   corresponding project skill location from the table above. For multiple
+   agents, install identical copies for each. Read the `SKILL.md` and follow
+   your coding agent's official discovery instructions.
 4. Install Git, Python 3.10+, and GitHub CLI. Sign in with
    `gh auth login --hostname github.com --git-protocol https` and confirm with
    `gh auth status --hostname github.com`.
