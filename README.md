@@ -30,9 +30,11 @@ parity. The current reusable workflow and action can be pinned to commit
 6. For a user-initiated, browser-free publication, use the optional local
    publisher described in [Consumer setup](docs/CONSUMER-SETUP.md).
 
-## Activate with an AI coding chat
+## Activate with an AI coding agent
 
-In a project chat that has access to the project files and terminal, ask:
+In a project chat that has access to the project files and terminal, ask. The
+Toolkit's setup guide covers Codex, Claude Code, Cursor, GitHub Copilot/VS Code,
+and Gemini CLI. The workflow is shared; only the project skill folder varies:
 
 > Activate the ARK Release Toolkit for this project. Read its consumer setup
 > guide and project instructions, install and pin the toolkit, add its project
@@ -44,7 +46,7 @@ In a project chat that has access to the project files and terminal, ask:
 The chat should explain the one-time GitHub authorization requirement before
 running setup, then do the rest of the available work itself. See the
 [step-by-step activation and AI prompt](docs/CONSUMER-SETUP.md#activate-this-toolkit-with-an-ai-chat)
-for the exact flow and limitations.
+for the exact flow, supported skill locations, cloud-agent notes, and limitations.
 
 ## Design rules
 
