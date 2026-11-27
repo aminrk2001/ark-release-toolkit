@@ -74,12 +74,12 @@ the sign-in, and then continue without asking the user to repeat the setup.
    Toolkit version without explaining the issue.
 3. Install a reviewed, immutable Toolkit checkout for the local publisher. The
    current publisher implementation is at commit
-   `84152c5a771cc548f606129b7102322accd3531b`. For example, from the project
+   `a9cda703f26715d3904bc5e53261c02eb17f7fc7`. For example, from the project
    root, a clean setup can use:
 
    ```sh
    git clone https://github.com/aminrk2001/ark-release-toolkit.git .tools/ark-release-toolkit
-   git -C .tools/ark-release-toolkit checkout --detach 84152c5a771cc548f606129b7102322accd3531b
+   git -C .tools/ark-release-toolkit checkout --detach a9cda703f26715d3904bc5e53261c02eb17f7fc7
    ```
 
    Keep this checkout out of the product package and ordinary project commits.
@@ -142,7 +142,7 @@ then continue. Do not ask me for a password, token, or authorization code.
 
 Inspect the current Git status and existing setup. Preserve my work. Pin a clean
 Toolkit checkout to commit
-84152c5a771cc548f606129b7102322accd3531b, install the project skill in the
+a9cda703f26715d3904bc5e53261c02eb17f7fc7, install the project skill in the
 location this coding agent discovers, check/install Git, Python 3.10+, and
 GitHub CLI where permitted, then verify gh authentication. If sign-in is
 needed and this environment supports interactive authorization, start it, wait
@@ -168,7 +168,7 @@ publication.
 1. Review this guide and `examples/manifest.wordpress-plugin.json`.
 2. Clone the Toolkit and check out a reviewed immutable commit or tag. The
    current local publisher reference is
-   `84152c5a771cc548f606129b7102322accd3531b`; do not track a floating branch
+   `a9cda703f26715d3904bc5e53261c02eb17f7fc7`; do not track a floating branch
    for release use.
 3. Copy the canonical Toolkit skill folder into the consuming project's
    corresponding project skill location from the table above. For multiple
