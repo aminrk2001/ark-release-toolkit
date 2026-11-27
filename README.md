@@ -10,18 +10,22 @@ GitHub Actions, or ask an AI coding agent to set up the Toolkit in your project.
   Free/Pro variants, with a SHA-256 checksum sidecar for each package.
 - Runs the same package builder locally or through reusable GitHub Actions; the
   workflow uploads the ZIPs and checksums as CI artifacts.
-- Optionally publishes already-built packages to a GitHub Release through the
+- Optionally publishes verified packages to a GitHub Release through the
   local GitHub CLI publisher. It verifies the source commit, existing Git tag,
   reproducible package files, and uploaded asset digests before publishing.
+- Edits existing Releases with `scripts/edit_release.py`: titles, release notes,
+  draft/prerelease/latest status, discussion categories, and release assets.
+  Changes default to a dry-run; asset edits respect GitHub immutable-release rules.
 - Guides AI coding agents through project setup. The shared skill supports
   Codex, Claude Code, Cursor, GitHub Copilot/VS Code, and Gemini CLI.
 
 The Toolkit is for WordPress plugin projects that need consistent release
 archives from an explicit production file allowlist. It does not publish to the
 WordPress.org plugin directory. The reusable workflow builds CI artifacts only;
-the optional local publisher handles GitHub Releases after the project’s own
-release checks pass. Publication requires an existing tag that points to the
-current source commit.
+the local publisher creates Releases after the project’s own release checks
+pass, while the Release editor updates an existing Release without moving its
+tag. Publication requires an existing tag that points to the current source
+commit.
 
 ## Choose how to use it
 
