@@ -29,7 +29,17 @@ commit.
 
 ## Local GitHub CLI requirement
 
-The local Release commands, `scripts/publish.py` and `scripts/edit_release.py`, call GitHub CLI (`gh`). Install it and authenticate it in the same terminal/agent environment that runs the Python command, then verify with `gh auth status --hostname github.com`. A connected GitHub app in ChatGPT and an installed Git executable do not provide the local script with the `gh` program or its credentials. Local package building and the reusable CI packaging workflow do not require `gh`; local Release publishing and editing do. The one-time CLI sign-in may use browser or device authorization, but Release commands do not automate a browser. See [one-time GitHub CLI setup](docs/CONSUMER-SETUP.md#one-time-github-cli-setup).
+The local Release commands, `scripts/publish.py` and
+`scripts/edit_release.py`, call GitHub CLI (`gh`). Install it and authenticate
+it in the same terminal/agent environment that runs the Python command, then
+verify with `gh auth status --hostname github.com`. A connected GitHub app in
+ChatGPT and an installed Git executable do not provide the local script with
+the `gh` program or its credentials.
+
+Local package building and the reusable CI packaging workflow do not require
+`gh`; local Release publishing and editing do. The one-time CLI sign-in may use
+a browser or device authorization, but Release commands do not automate a
+browser. See [one-time GitHub CLI setup](docs/CONSUMER-SETUP.md#one-time-github-cli-setup).
 
 ## Choose how to use it
 
