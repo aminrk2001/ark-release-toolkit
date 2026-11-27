@@ -1,12 +1,12 @@
 ---
 name: ark-release-publisher
-description: Set up or activate the ARK Release Toolkit in a project using Codex, Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, or another agent that supports Agent Skills; or publish verified ARK package ZIPs and SHA-256 sidecars to an existing GitHub tag when explicitly requested.
+description: Set up or activate the ARK Release Toolkit in a project using Codex, Claude Code, Cursor, GitHub Copilot, VS Code, Gemini CLI, or another agent that supports Agent Skills; publish verified ARK package ZIPs and SHA-256 sidecars to an existing GitHub tag, or edit an existing GitHub Release when explicitly requested.
 ---
 
 # ARK Release Toolkit
 
 Use this skill when the user asks to activate, install, configure, or use the
-ARK Release Toolkit, or explicitly asks to publish a GitHub Release with it.
+ARK Release Toolkit, or explicitly asks to publish a GitHub Release or edit an existing Release with it.
 Read the Toolkit's `docs/CONSUMER-SETUP.md` and the consuming project's
 instructions before acting.
 
@@ -26,7 +26,7 @@ publish a Release, create or move tags, or change the project's release policy.
    and report the blocker.
 3. Read `docs/CONSUMER-SETUP.md`. Install/reuse a clean Toolkit checkout at the
    documented immutable commit
-   `142d6140d73e132398ca0deb330de1e50e7adec2`, using a project tools/cache
+   `84152c5a771cc548f606129b7102322accd3531b`, using a project tools/cache
    location that will not enter the product archive. Never overwrite an
    existing checkout with local changes.
 4. Install the canonical skill directory into the project folder supported by
@@ -92,6 +92,31 @@ publish.
 6. If any check fails or a draft is left behind, stop. Do not retry with
    overwrite, delete the draft, or alter the tag. Report the exact failure and
    preserve the draft for inspection.
+
+## Edit an existing GitHub Release
+
+Only edit an existing Release when the user explicitly asks for that change.
+Read the consuming project's release instructions first and identify the exact
+repository and tag. Do not use an edit request as permission to publish a new
+version, delete a Release, rename a tag, or change its target commit.
+
+1. Check `gh auth status --hostname github.com` without showing credentials.
+   If authentication is unavailable, follow the one-time authorization steps
+   above; never ask for a password or token in chat.
+2. Run the installed `scripts/edit_release.py` with the exact Release tag and
+   requested fields. The command defaults to a dry run. Inspect the plan before
+   adding `--apply`.
+3. It supports title and release notes, draft/prerelease and Latest status,
+   discussion category, and attached asset labels, additions, removals, and
+   explicit replacements. It does not change the tag or delete the Release.
+4. Existing assets are never overwritten implicitly. For a replacement, the
+   command uploads and verifies a temporary asset before removing the old one.
+   If a later API step fails, inspect the Release and report any partial change
+   or temporary asset; GitHub changes are not transactional.
+5. Immutable Releases still permit some metadata edits, but GitHub blocks
+   asset changes. The command checks immutability and refuses asset changes
+   when the state is immutable or unavailable. Verify the final Release fields
+   and asset digests before reporting success.
 
 Never request, print, or store a GitHub token. Never claim success until the
 command confirms the published Release and all asset digests.
