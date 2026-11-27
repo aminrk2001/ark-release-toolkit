@@ -74,12 +74,12 @@ the sign-in, and then continue without asking the user to repeat the setup.
    Toolkit version without explaining the issue.
 3. Install a reviewed, immutable Toolkit checkout for the local publisher. The
    current publisher implementation is at commit
-   `142d6140d73e132398ca0deb330de1e50e7adec2`. For example, from the project
+   `84152c5a771cc548f606129b7102322accd3531b`. For example, from the project
    root, a clean setup can use:
 
    ```sh
    git clone https://github.com/aminrk2001/ark-release-toolkit.git .tools/ark-release-toolkit
-   git -C .tools/ark-release-toolkit checkout --detach 142d6140d73e132398ca0deb330de1e50e7adec2
+   git -C .tools/ark-release-toolkit checkout --detach 84152c5a771cc548f606129b7102322accd3531b
    ```
 
    Keep this checkout out of the product package and ordinary project commits.
@@ -142,7 +142,7 @@ then continue. Do not ask me for a password, token, or authorization code.
 
 Inspect the current Git status and existing setup. Preserve my work. Pin a clean
 Toolkit checkout to commit
-142d6140d73e132398ca0deb330de1e50e7adec2, install the project skill in the
+84152c5a771cc548f606129b7102322accd3531b, install the project skill in the
 location this coding agent discovers, check/install Git, Python 3.10+, and
 GitHub CLI where permitted, then verify gh authentication. If sign-in is
 needed and this environment supports interactive authorization, start it, wait
@@ -168,7 +168,7 @@ publication.
 1. Review this guide and `examples/manifest.wordpress-plugin.json`.
 2. Clone the Toolkit and check out a reviewed immutable commit or tag. The
    current local publisher reference is
-   `142d6140d73e132398ca0deb330de1e50e7adec2`; do not track a floating branch
+   `84152c5a771cc548f606129b7102322accd3531b`; do not track a floating branch
    for release use.
 3. Copy the canonical Toolkit skill folder into the consuming project's
    corresponding project skill location from the table above. For multiple
@@ -273,6 +273,55 @@ Repeat `--asset` for each package and its matching `.sha256` sidecar. Add
 terminal tool; it does not use browser or computer-screen interaction. If
 upload or verification fails, the publisher leaves any created Release as a
 draft for inspection and does not replace or delete it.
+
+## Edit an existing GitHub Release
+
+Use `scripts/edit_release.py` when the user explicitly asks to update a Release
+that already exists. It can change the title and release notes, draft and
+prerelease status, Latest selection, an existing discussion category, and
+attached asset labels/files. It never creates or deletes a Release, renames a
+tag, or changes a tag's target commit.
+
+The command first reads the exact Release by tag and prints a dry-run plan. No
+changes are made unless `--apply` is present. Example:
+
+```sh
+python .tools/ark-release-toolkit/scripts/edit_release.py \
+  --repository OWNER/REPOSITORY \
+  --tag v1.2.3 \
+  --title "Version 1.2.3" \
+  --notes-file RELEASE-1.2.3.md
+```
+
+Review the plan, then add `--apply` to make those changes. Other supported
+options include:
+
+- `--prerelease` / `--no-prerelease`
+- `--draft` / `--no-draft`
+- `--latest` / `--no-latest`
+- `--discussion-category CATEGORY`
+- `--asset PATH` to add a new asset
+- `--remove-asset EXACT_NAME` to remove an attached asset
+- `--replace-asset PATH` to replace an asset with the same filename
+- `--asset-label NAME=LABEL` to set a label, or `NAME=` to clear it
+
+Existing assets are never overwritten implicitly. Replacement uploads a
+uniquely named temporary asset, verifies its size and SHA-256 digest, and then
+swaps it for the old asset. If GitHub rejects a later replacement step, the
+error identifies any temporary asset left attached so it can be inspected.
+Operations use separate GitHub requests and are not transactional: if a later
+requested operation fails, earlier completed changes may remain. Review the
+dry-run plan and check the Release after any failure.
+
+GitHub immutable Releases still allow title, notes, prerelease and Latest
+changes, but do not allow asset additions, replacements, or removals. The tool
+checks the Release's immutable state and refuses asset changes when GitHub marks
+it immutable or that state cannot be verified. See GitHub's
+[release editing rules](https://docs.github.com/en/repositories/releasing-projects-on-github/managing-releases-in-a-repository#editing-a-release).
+
+Editing requires GitHub CLI authentication and repository write access. Check
+`gh auth status --hostname github.com`; never place a token in a command,
+manifest, or repository file.
 
 ## Review before enabling publication
 
