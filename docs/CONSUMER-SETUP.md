@@ -225,6 +225,15 @@ checked-in manifest, compares their bytes and sidecars, creates a GitHub draft,
 checks every uploaded asset's SHA-256 digest, and only then publishes it. It
 does not create or move tags, replace existing releases, or overwrite assets.
 
+Both local Release commands (`publish.py` and `edit_release.py`) invoke
+`gh` directly. Install and authenticate GitHub CLI in the same environment
+where the Toolkit command will run. A Git executable or a connected GitHub app
+in ChatGPT does not make the local `gh` executable or its saved credentials
+available to that command. Package building and the reusable CI packaging
+workflow do not require a local GitHub CLI installation. The one-time CLI
+sign-in may open a browser or prompt for device authorization; Release actions
+themselves do not automate browser interactions.
+
 ### One-time GitHub CLI setup
 
 Install GitHub CLI using the [official installation instructions](https://github.com/cli/cli#installation).
@@ -281,6 +290,11 @@ that already exists. It can change the title and release notes, draft and
 prerelease status, Latest selection, an existing discussion category, and
 attached asset labels/files. It never creates or deletes a Release, renames a
 tag, or changes a tag's target commit.
+
+This is a local command that invokes `gh`; complete the
+[one-time GitHub CLI setup](#one-time-github-cli-setup) in the same environment
+before running it. Installing the ChatGPT GitHub app alone is not sufficient
+for this local process.
 
 The command first reads the exact Release by tag and prints a dry-run plan. No
 changes are made unless `--apply` is present. Example:
