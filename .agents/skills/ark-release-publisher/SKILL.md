@@ -41,11 +41,16 @@ publish a Release, create or move tags, or change the project's release policy.
    any existing skill before changing it. In cloud sessions, use a committed
    project skill and verify that the cloud agent discovers it; personal local
    skills may not be available there.
-5. Check Git, Python 3.10+, and GitHub CLI. Install missing tools using official
-   platform instructions when terminal access, network access, and permissions
-   allow. Do not claim an installation succeeded without checking the version.
-6. Run `gh auth status --hostname github.com`. If sign-in is required, announce
-   the need before starting, run
+5. Check Git, Python 3.10+, and GitHub CLI. The local publisher and Release
+   editor invoke `gh`, so it must be installed on PATH in the same environment
+   that runs those commands. A connected GitHub app in ChatGPT does not provide
+   the local process with the CLI executable or its stored credentials. Local
+   package building alone does not require GitHub CLI. Install missing tools
+   using official platform instructions when terminal access, network access,
+   and permissions allow. Do not claim an installation succeeded without
+   checking the version.
+6. Run `gh auth status --hostname github.com` in the command's execution
+   environment. If sign-in is required, announce the need before starting, run
    `gh auth login --hostname github.com --git-protocol https`, wait while the
    user completes GitHub's authorization, check status again, and continue
    setup. Never print, request, or store credentials.
@@ -79,7 +84,9 @@ publish.
    consuming repository, existing tag, title, notes file, manifest, source
    root, each ZIP and its `.sha256` sidecar. Use the terminal command
    documented in `docs/CONSUMER-SETUP.md`.
-4. Check `gh auth status --hostname github.com` without showing a token. If not
+4. Check `gh auth status --hostname github.com` in the same environment that
+   runs the publisher, without showing a token. Authentication in ChatGPT's
+   GitHub app does not count as local CLI authentication. If `gh` is not
    authenticated, tell the user before starting the one-time sign-in, run
    `gh auth login --hostname github.com --git-protocol https`, pause while they
    complete GitHub authorization, then verify sign-in and resume publication.
@@ -100,9 +107,11 @@ Read the consuming project's release instructions first and identify the exact
 repository and tag. Do not use an edit request as permission to publish a new
 version, delete a Release, rename a tag, or change its target commit.
 
-1. Check `gh auth status --hostname github.com` without showing credentials.
-   If authentication is unavailable, follow the one-time authorization steps
-   above; never ask for a password or token in chat.
+1. Check `gh auth status --hostname github.com` in the same environment that
+   runs the editor, without showing credentials. A GitHub app connection in
+   ChatGPT does not provide local CLI authentication. If `gh` is unavailable,
+   follow the one-time installation and authorization steps above; never ask
+   for a password or token in chat.
 2. Run the installed `scripts/edit_release.py` with the exact Release tag and
    requested fields. The command defaults to a dry run. Inspect the plan before
    adding `--apply`.
